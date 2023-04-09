@@ -111,32 +111,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<div class="cell" data-execution_count="1">
+<div class="cell" data-execution_count="43">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy <span class="im">import</span> displacy</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>config InlineBackend.figure_format <span class="op">=</span> <span class="st">'svg'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> string <span class="im">import</span> punctuation</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> spacy</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> spacy <span class="im">import</span> displacy</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>config InlineBackend.figure_format <span class="op">=</span> <span class="st">'svg'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>de <span class="op">=</span> spacy.load(<span class="st">'de_dep_news_trf'</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>el <span class="op">=</span> spacy.load(<span class="st">'el_core_news_lg'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>MODELS <span class="op">=</span> {</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'de'</span>: de,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'el'</span>: el</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>COLORS <span class="op">=</span> {</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'de'</span>: <span class="st">'#a52040'</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'el'</span>: <span class="st">'#404080'</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'err'</span>: <span class="st">'#b4b446'</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="249">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>MODELS <span class="op">=</span> {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'de'</span>: de,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'el'</span>: el</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>COLORS <span class="op">=</span> {</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'de'</span>: <span class="st">'#a52040'</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'el'</span>: <span class="st">'#404080'</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'stern_yellow'</span>: <span class="st">'#c3c31d'</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'stern_blue'</span>: <span class="st">'#0b3f7e'</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'stern_purple'</span>: <span class="st">'#7c7cf8'</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">'stern_darkbrown'</span>: <span class="st">'#370306'</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">'darkgreen'</span>: <span class="st">'#006400'</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">'orange'</span>: <span class="st">'#f4a460'</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">'green'</span>: <span class="st">'#90ee90'</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">'blue'</span>: <span class="st">'#add8e6'</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'purple'</span>: <span class="st">'#800080'</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">'err'</span>: <span class="st">'#b4b446'</span>,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>texts <span class="op">=</span> pd.read_csv(<span class="st">'examples.csv'</span>, sep<span class="op">=</span><span class="st">','</span>, encoding<span class="op">=</span><span class="st">'utf-8'</span>)</span>
@@ -191,27 +203,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-execution_count="47">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> remove_crossrefs(text):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Remove cross references from text. </span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">    A cross reference is a string of the form (ΑΚ 123) or (BGB § 123)."""</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    pattern <span class="op">=</span> <span class="vs">r'\((ΑΚ|AK|BGB)\s*§?\s*\d+\)'</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> re.sub(pattern, <span class="st">''</span>, text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> re.sub(pattern, <span class="st">''</span>, text)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> remove_punctuation(text: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> re.sub(<span class="vs">r'[</span><span class="sc">{}</span><span class="vs">]'</span>.<span class="bu">format</span>(punctuation), <span class="st">''</span>, text)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_morphology_dict(token: spacy.tokens.token.Token) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Return a dictionary of each token and its morphology from a text in a nested dictionary."""</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {token.text: token.morph.to_dict()}</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>get_morphology_dict(de(<span class="st">'Das ist ein Test'</span>)[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="47">
+<pre><code>{'Das': {'Case': 'Nom', 'Gender': 'Neut', 'Number': 'Sing', 'PronType': 'Dem'}}</code></pre>
 </div>
-<div class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>texts[<span class="st">'pos'</span>] <span class="op">=</span> texts[<span class="st">'length'</span>] <span class="op">=</span> np.nan</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, text <span class="kw">in</span> <span class="bu">enumerate</span>(texts[<span class="st">'text'</span>].to_list()):</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> remove_crossrefs(text)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    doc <span class="op">=</span> MODELS[texts[<span class="st">'lang'</span>][i]](text)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    texts.loc[i, <span class="st">'length'</span>] <span class="op">=</span> <span class="bu">len</span>([token.text <span class="cf">for</span> token <span class="kw">in</span> doc </span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="cf">if</span> <span class="kw">not</span> token.is_punct <span class="kw">and</span> <span class="kw">not</span> token.is_digit])</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    texts.loc[i, <span class="st">'pos'</span>] <span class="op">=</span> <span class="st">" "</span>.join([token.pos_ <span class="cf">for</span> token <span class="kw">in</span> doc])</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    displacy.render(doc, style<span class="op">=</span><span class="st">'dep'</span>, jupyter<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>texts[<span class="st">'length'</span>] <span class="op">=</span> texts[<span class="st">'length'</span>].astype(<span class="bu">int</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="49">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>texts[<span class="st">'pos'</span>] <span class="op">=</span> texts[<span class="st">'length'</span>] <span class="op">=</span> texts[<span class="st">'morphology'</span>] <span class="op">=</span> np.nan</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, text <span class="kw">in</span> <span class="bu">enumerate</span>(texts[<span class="st">'text'</span>].to_list()):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> remove_crossrefs(text)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    doc <span class="op">=</span> MODELS[texts[<span class="st">'lang'</span>][i]](text)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    texts.loc[i, <span class="st">'length'</span>] <span class="op">=</span> <span class="bu">len</span>([token.text <span class="cf">for</span> token <span class="kw">in</span> doc </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                                  <span class="cf">if</span> <span class="kw">not</span> token.is_punct <span class="kw">and</span> <span class="kw">not</span> token.is_digit])</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    texts.loc[i, <span class="st">'pos'</span>] <span class="op">=</span> <span class="st">" "</span>.join([token.pos_ <span class="cf">for</span> token <span class="kw">in</span> doc])</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    texts.loc[i, <span class="st">'morphology'</span>] <span class="op">=</span> json.dumps([get_morphology_dict(token) <span class="cf">for</span> token <span class="kw">in</span> doc], ensure_ascii<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    displacy.render(doc, style<span class="op">=</span><span class="st">'dep'</span>, jupyter<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>texts[<span class="st">'length'</span>] <span class="op">=</span> texts[<span class="st">'length'</span>].astype(<span class="bu">int</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<span class="tex2jax_ignore"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" lang="el" id="d91305359c6a4c7a8ea1ac036358909e-0" class="displacy" width="2675" height="399.5" direction="ltr" style="max-width: none; height: 399.5px; color: #000000; background: #ffffff; font-family: Arial; direction: ltr">
+<span class="tex2jax_ignore"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" lang="el" id="fa575d767187408d9d541393a5b20f40-0" class="displacy" width="2675" height="399.5" direction="ltr" style="max-width: none; height: 399.5px; color: #000000; background: #ffffff; font-family: Arial; direction: ltr">
 <text class="displacy-token" fill="currentColor" text-anchor="middle" y="309.5">
     <tspan class="displacy-word" fill="currentColor" x="50">Κατὰ</tspan>
     <tspan class="displacy-tag" dy="2em" fill="currentColor" x="50">ADP</tspan>
@@ -288,120 +315,120 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </text>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-0" stroke-width="2px" d="M245,264.5 C245,177.0 390.0,177.0 390.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-0" stroke-width="2px" d="M245,264.5 C245,177.0 390.0,177.0 390.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-0" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-0" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
     </text>
     <path class="displacy-arrowhead" d="M245,266.5 L237,254.5 253,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-1" stroke-width="2px" d="M70,264.5 C70,89.5 395.0,89.5 395.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-1" stroke-width="2px" d="M70,264.5 C70,89.5 395.0,89.5 395.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-1" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">obj</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-1" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">obj</textpath>
     </text>
     <path class="displacy-arrowhead" d="M395.0,266.5 L403.0,254.5 387.0,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-2" stroke-width="2px" d="M595,264.5 C595,177.0 740.0,177.0 740.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-2" stroke-width="2px" d="M595,264.5 C595,177.0 740.0,177.0 740.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-2" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-2" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
     </text>
     <path class="displacy-arrowhead" d="M595,266.5 L587,254.5 603,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-3" stroke-width="2px" d="M770,264.5 C770,89.5 1095.0,89.5 1095.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-3" stroke-width="2px" d="M770,264.5 C770,89.5 1095.0,89.5 1095.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-3" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nsubj:pass</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-3" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nsubj:pass</textpath>
     </text>
     <path class="displacy-arrowhead" d="M770,266.5 L762,254.5 778,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-4" stroke-width="2px" d="M770,264.5 C770,177.0 915.0,177.0 915.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-4" stroke-width="2px" d="M770,264.5 C770,177.0 915.0,177.0 915.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-4" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-4" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
     </text>
     <path class="displacy-arrowhead" d="M915.0,266.5 L923.0,254.5 907.0,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-5" stroke-width="2px" d="M420,264.5 C420,2.0 1100.0,2.0 1100.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-5" stroke-width="2px" d="M420,264.5 C420,2.0 1100.0,2.0 1100.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-5" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">acl:relcl</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-5" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">acl:relcl</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1100.0,266.5 L1108.0,254.5 1092.0,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-6" stroke-width="2px" d="M1295,264.5 C1295,89.5 1620.0,89.5 1620.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-6" stroke-width="2px" d="M1295,264.5 C1295,89.5 1620.0,89.5 1620.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-6" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">punct</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-6" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">punct</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1295,266.5 L1287,254.5 1303,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-7" stroke-width="2px" d="M1470,264.5 C1470,177.0 1615.0,177.0 1615.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-7" stroke-width="2px" d="M1470,264.5 C1470,177.0 1615.0,177.0 1615.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-7" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">advmod</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-7" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">advmod</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1470,266.5 L1462,254.5 1478,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-8" stroke-width="2px" d="M1120,264.5 C1120,2.0 1625.0,2.0 1625.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-8" stroke-width="2px" d="M1120,264.5 C1120,2.0 1625.0,2.0 1625.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-8" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">conj</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-8" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">conj</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1625.0,266.5 L1633.0,254.5 1617.0,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-9" stroke-width="2px" d="M1820,264.5 C1820,177.0 1965.0,177.0 1965.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-9" stroke-width="2px" d="M1820,264.5 C1820,177.0 1965.0,177.0 1965.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-9" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">amod</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-9" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">amod</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1820,266.5 L1812,254.5 1828,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-10" stroke-width="2px" d="M1645,264.5 C1645,89.5 1970.0,89.5 1970.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-10" stroke-width="2px" d="M1645,264.5 C1645,89.5 1970.0,89.5 1970.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-10" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-10" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1970.0,266.5 L1978.0,254.5 1962.0,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-11" stroke-width="2px" d="M2170,264.5 C2170,89.5 2495.0,89.5 2495.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-11" stroke-width="2px" d="M2170,264.5 C2170,89.5 2495.0,89.5 2495.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-11" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">case</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-11" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">case</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2170,266.5 L2162,254.5 2178,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-12" stroke-width="2px" d="M2345,264.5 C2345,177.0 2490.0,177.0 2490.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-12" stroke-width="2px" d="M2345,264.5 C2345,177.0 2490.0,177.0 2490.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-12" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-12" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2345,266.5 L2337,254.5 2353,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-d91305359c6a4c7a8ea1ac036358909e-0-13" stroke-width="2px" d="M1995,264.5 C1995,2.0 2500.0,2.0 2500.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-fa575d767187408d9d541393a5b20f40-0-13" stroke-width="2px" d="M1995,264.5 C1995,2.0 2500.0,2.0 2500.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-d91305359c6a4c7a8ea1ac036358909e-0-13" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
+        <textpath href="#arrow-fa575d767187408d9d541393a5b20f40-0-13" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2500.0,266.5 L2508.0,254.5 2492.0,254.5" fill="currentColor"></path>
 </g>
 </svg></span>
 </div>
 <div class="cell-output cell-output-display">
-<span class="tex2jax_ignore"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" lang="el" id="bb7028a8be9646699e6199de4f8d41d3-0" class="displacy" width="2500" height="399.5" direction="ltr" style="max-width: none; height: 399.5px; color: #000000; background: #ffffff; font-family: Arial; direction: ltr">
+<span class="tex2jax_ignore"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" lang="el" id="f81ca1278d9f4a5886376e43fe2a6bb1-0" class="displacy" width="2500" height="399.5" direction="ltr" style="max-width: none; height: 399.5px; color: #000000; background: #ffffff; font-family: Arial; direction: ltr">
 <text class="displacy-token" fill="currentColor" text-anchor="middle" y="309.5">
     <tspan class="displacy-word" fill="currentColor" x="50">Κατά</tspan>
     <tspan class="displacy-tag" dy="2em" fill="currentColor" x="50">ADP</tspan>
@@ -473,112 +500,112 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </text>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-bb7028a8be9646699e6199de4f8d41d3-0-0" stroke-width="2px" d="M70,264.5 C70,89.5 395.0,89.5 395.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-0" stroke-width="2px" d="M70,264.5 C70,89.5 395.0,89.5 395.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-bb7028a8be9646699e6199de4f8d41d3-0-0" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">case</textpath>
+        <textpath href="#arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-0" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">case</textpath>
     </text>
     <path class="displacy-arrowhead" d="M70,266.5 L62,254.5 78,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-bb7028a8be9646699e6199de4f8d41d3-0-1" stroke-width="2px" d="M245,264.5 C245,177.0 390.0,177.0 390.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-1" stroke-width="2px" d="M245,264.5 C245,177.0 390.0,177.0 390.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-bb7028a8be9646699e6199de4f8d41d3-0-1" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
+        <textpath href="#arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-1" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
     </text>
     <path class="displacy-arrowhead" d="M245,266.5 L237,254.5 253,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-bb7028a8be9646699e6199de4f8d41d3-0-2" stroke-width="2px" d="M420,264.5 C420,2.0 1100.0,2.0 1100.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-2" stroke-width="2px" d="M420,264.5 C420,2.0 1100.0,2.0 1100.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-bb7028a8be9646699e6199de4f8d41d3-0-2" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">obl</textpath>
+        <textpath href="#arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-2" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">obl</textpath>
     </text>
     <path class="displacy-arrowhead" d="M420,266.5 L412,254.5 428,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-bb7028a8be9646699e6199de4f8d41d3-0-3" stroke-width="2px" d="M595,264.5 C595,177.0 740.0,177.0 740.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-3" stroke-width="2px" d="M595,264.5 C595,177.0 740.0,177.0 740.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-bb7028a8be9646699e6199de4f8d41d3-0-3" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
+        <textpath href="#arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-3" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
     </text>
     <path class="displacy-arrowhead" d="M595,266.5 L587,254.5 603,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-bb7028a8be9646699e6199de4f8d41d3-0-4" stroke-width="2px" d="M420,264.5 C420,89.5 745.0,89.5 745.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-4" stroke-width="2px" d="M420,264.5 C420,89.5 745.0,89.5 745.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-bb7028a8be9646699e6199de4f8d41d3-0-4" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
+        <textpath href="#arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-4" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
     </text>
     <path class="displacy-arrowhead" d="M745.0,266.5 L753.0,254.5 737.0,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-bb7028a8be9646699e6199de4f8d41d3-0-5" stroke-width="2px" d="M770,264.5 C770,177.0 915.0,177.0 915.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-5" stroke-width="2px" d="M770,264.5 C770,177.0 915.0,177.0 915.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-bb7028a8be9646699e6199de4f8d41d3-0-5" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
+        <textpath href="#arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-5" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
     </text>
     <path class="displacy-arrowhead" d="M915.0,266.5 L923.0,254.5 907.0,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-bb7028a8be9646699e6199de4f8d41d3-0-6" stroke-width="2px" d="M1295,264.5 C1295,89.5 1620.0,89.5 1620.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-6" stroke-width="2px" d="M1295,264.5 C1295,89.5 1620.0,89.5 1620.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-bb7028a8be9646699e6199de4f8d41d3-0-6" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
+        <textpath href="#arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-6" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">det</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1295,266.5 L1287,254.5 1303,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-bb7028a8be9646699e6199de4f8d41d3-0-7" stroke-width="2px" d="M1470,264.5 C1470,177.0 1615.0,177.0 1615.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-7" stroke-width="2px" d="M1470,264.5 C1470,177.0 1615.0,177.0 1615.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-bb7028a8be9646699e6199de4f8d41d3-0-7" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">amod</textpath>
+        <textpath href="#arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-7" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">amod</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1470,266.5 L1462,254.5 1478,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-bb7028a8be9646699e6199de4f8d41d3-0-8" stroke-width="2px" d="M1120,264.5 C1120,2.0 1625.0,2.0 1625.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-8" stroke-width="2px" d="M1120,264.5 C1120,2.0 1625.0,2.0 1625.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-bb7028a8be9646699e6199de4f8d41d3-0-8" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nsubj:pass</textpath>
+        <textpath href="#arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-8" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nsubj:pass</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1625.0,266.5 L1633.0,254.5 1617.0,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-bb7028a8be9646699e6199de4f8d41d3-0-9" stroke-width="2px" d="M1820,264.5 C1820,177.0 1965.0,177.0 1965.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-9" stroke-width="2px" d="M1820,264.5 C1820,177.0 1965.0,177.0 1965.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-bb7028a8be9646699e6199de4f8d41d3-0-9" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">case</textpath>
+        <textpath href="#arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-9" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">case</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1820,266.5 L1812,254.5 1828,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-bb7028a8be9646699e6199de4f8d41d3-0-10" stroke-width="2px" d="M1645,264.5 C1645,89.5 1970.0,89.5 1970.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-10" stroke-width="2px" d="M1645,264.5 C1645,89.5 1970.0,89.5 1970.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-bb7028a8be9646699e6199de4f8d41d3-0-10" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
+        <textpath href="#arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-10" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1970.0,266.5 L1978.0,254.5 1962.0,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-bb7028a8be9646699e6199de4f8d41d3-0-11" stroke-width="2px" d="M2170,264.5 C2170,177.0 2315.0,177.0 2315.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-11" stroke-width="2px" d="M2170,264.5 C2170,177.0 2315.0,177.0 2315.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-bb7028a8be9646699e6199de4f8d41d3-0-11" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">case</textpath>
+        <textpath href="#arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-11" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">case</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2170,266.5 L2162,254.5 2178,254.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-bb7028a8be9646699e6199de4f8d41d3-0-12" stroke-width="2px" d="M1995,264.5 C1995,89.5 2320.0,89.5 2320.0,264.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-12" stroke-width="2px" d="M1995,264.5 C1995,89.5 2320.0,89.5 2320.0,264.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-bb7028a8be9646699e6199de4f8d41d3-0-12" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
+        <textpath href="#arrow-f81ca1278d9f4a5886376e43fe2a6bb1-0-12" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nmod</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2320.0,266.5 L2328.0,254.5 2312.0,254.5" fill="currentColor"></path>
 </g>
 </svg></span>
 </div>
 <div class="cell-output cell-output-display">
-<span class="tex2jax_ignore"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" lang="de" id="1f686eaeae284cb19765df24fba246bd-0" class="displacy" width="3725" height="662.0" direction="ltr" style="max-width: none; height: 662.0px; color: #000000; background: #ffffff; font-family: Arial; direction: ltr">
+<span class="tex2jax_ignore"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" lang="de" id="bf176536fa94483ca29c9e30e1e41a4f-0" class="displacy" width="3725" height="662.0" direction="ltr" style="max-width: none; height: 662.0px; color: #000000; background: #ffffff; font-family: Arial; direction: ltr">
 <text class="displacy-token" fill="currentColor" text-anchor="middle" y="572.0">
     <tspan class="displacy-word" fill="currentColor" x="50">Bei</tspan>
     <tspan class="displacy-tag" dy="2em" fill="currentColor" x="50">ADP</tspan>
@@ -685,168 +712,168 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </text>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-0" stroke-width="2px" d="M70,527.0 C70,89.5 1795.0,89.5 1795.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-0" stroke-width="2px" d="M70,527.0 C70,89.5 1795.0,89.5 1795.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-0" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">mo</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-0" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">mo</textpath>
     </text>
     <path class="displacy-arrowhead" d="M70,529.0 L62,517.0 78,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-1" stroke-width="2px" d="M245,527.0 C245,439.5 375.0,439.5 375.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-1" stroke-width="2px" d="M245,527.0 C245,439.5 375.0,439.5 375.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-1" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-1" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M245,529.0 L237,517.0 253,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-2" stroke-width="2px" d="M70,527.0 C70,352.0 380.0,352.0 380.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-2" stroke-width="2px" d="M70,527.0 C70,352.0 380.0,352.0 380.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-2" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-2" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M380.0,529.0 L388.0,517.0 372.0,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-3" stroke-width="2px" d="M595,527.0 C595,439.5 725.0,439.5 725.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-3" stroke-width="2px" d="M595,527.0 C595,439.5 725.0,439.5 725.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-3" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-3" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M595,529.0 L587,517.0 603,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-4" stroke-width="2px" d="M420,527.0 C420,352.0 730.0,352.0 730.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-4" stroke-width="2px" d="M420,527.0 C420,352.0 730.0,352.0 730.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-4" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">ag</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-4" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">ag</textpath>
     </text>
     <path class="displacy-arrowhead" d="M730.0,529.0 L738.0,517.0 722.0,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-5" stroke-width="2px" d="M1120,527.0 C1120,352.0 1430.0,352.0 1430.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-5" stroke-width="2px" d="M1120,527.0 C1120,352.0 1430.0,352.0 1430.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-5" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-5" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1120,529.0 L1112,517.0 1128,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-6" stroke-width="2px" d="M1295,527.0 C1295,439.5 1425.0,439.5 1425.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-6" stroke-width="2px" d="M1295,527.0 C1295,439.5 1425.0,439.5 1425.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-6" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-6" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1295,529.0 L1287,517.0 1303,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-7" stroke-width="2px" d="M945,527.0 C945,264.5 1435.0,264.5 1435.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-7" stroke-width="2px" d="M945,527.0 C945,264.5 1435.0,264.5 1435.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-7" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">sb</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-7" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">sb</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1435.0,529.0 L1443.0,517.0 1427.0,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-8" stroke-width="2px" d="M1645,527.0 C1645,439.5 1775.0,439.5 1775.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-8" stroke-width="2px" d="M1645,527.0 C1645,439.5 1775.0,439.5 1775.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-8" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">pm</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-8" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">pm</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1645,529.0 L1637,517.0 1653,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-9" stroke-width="2px" d="M945,527.0 C945,177.0 1790.0,177.0 1790.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-9" stroke-width="2px" d="M945,527.0 C945,177.0 1790.0,177.0 1790.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-9" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">oc</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-9" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">oc</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1790.0,529.0 L1798.0,517.0 1782.0,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-10" stroke-width="2px" d="M1820,527.0 C1820,439.5 1950.0,439.5 1950.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-10" stroke-width="2px" d="M1820,527.0 C1820,439.5 1950.0,439.5 1950.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-10" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">cd</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-10" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">cd</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1950.0,529.0 L1958.0,517.0 1942.0,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-11" stroke-width="2px" d="M2170,527.0 C2170,89.5 3545.0,89.5 3545.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-11" stroke-width="2px" d="M2170,527.0 C2170,89.5 3545.0,89.5 3545.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-11" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">ng</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-11" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">ng</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2170,529.0 L2162,517.0 2178,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-12" stroke-width="2px" d="M2345,527.0 C2345,177.0 3540.0,177.0 3540.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-12" stroke-width="2px" d="M2345,527.0 C2345,177.0 3540.0,177.0 3540.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-12" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">op</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-12" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">op</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2345,529.0 L2337,517.0 2353,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-13" stroke-width="2px" d="M2520,527.0 C2520,352.0 2830.0,352.0 2830.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-13" stroke-width="2px" d="M2520,527.0 C2520,352.0 2830.0,352.0 2830.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-13" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-13" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2520,529.0 L2512,517.0 2528,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-14" stroke-width="2px" d="M2695,527.0 C2695,439.5 2825.0,439.5 2825.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-14" stroke-width="2px" d="M2695,527.0 C2695,439.5 2825.0,439.5 2825.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-14" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-14" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2695,529.0 L2687,517.0 2703,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-15" stroke-width="2px" d="M2345,527.0 C2345,264.5 2835.0,264.5 2835.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-15" stroke-width="2px" d="M2345,527.0 C2345,264.5 2835.0,264.5 2835.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-15" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-15" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2835.0,529.0 L2843.0,517.0 2827.0,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-16" stroke-width="2px" d="M3045,527.0 C3045,439.5 3175.0,439.5 3175.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-16" stroke-width="2px" d="M3045,527.0 C3045,439.5 3175.0,439.5 3175.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-16" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-16" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M3045,529.0 L3037,517.0 3053,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-17" stroke-width="2px" d="M2870,527.0 C2870,352.0 3180.0,352.0 3180.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-17" stroke-width="2px" d="M2870,527.0 C2870,352.0 3180.0,352.0 3180.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-17" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">ag</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-17" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">ag</textpath>
     </text>
     <path class="displacy-arrowhead" d="M3180.0,529.0 L3188.0,517.0 3172.0,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-18" stroke-width="2px" d="M3395,527.0 C3395,439.5 3525.0,439.5 3525.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-18" stroke-width="2px" d="M3395,527.0 C3395,439.5 3525.0,439.5 3525.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-18" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">pm</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-18" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">pm</textpath>
     </text>
     <path class="displacy-arrowhead" d="M3395,529.0 L3387,517.0 3403,517.0" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-1f686eaeae284cb19765df24fba246bd-0-19" stroke-width="2px" d="M1995,527.0 C1995,2.0 3550.0,2.0 3550.0,527.0" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-bf176536fa94483ca29c9e30e1e41a4f-0-19" stroke-width="2px" d="M1995,527.0 C1995,2.0 3550.0,2.0 3550.0,527.0" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-1f686eaeae284cb19765df24fba246bd-0-19" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">cj</textpath>
+        <textpath href="#arrow-bf176536fa94483ca29c9e30e1e41a4f-0-19" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">cj</textpath>
     </text>
     <path class="displacy-arrowhead" d="M3550.0,529.0 L3558.0,517.0 3542.0,517.0" fill="currentColor"></path>
 </g>
 </svg></span>
 </div>
 <div class="cell-output cell-output-display">
-<span class="tex2jax_ignore"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" lang="de" id="c0a63d98a14f41df955503f1282df6c0-0" class="displacy" width="2850" height="574.5" direction="ltr" style="max-width: none; height: 574.5px; color: #000000; background: #ffffff; font-family: Arial; direction: ltr">
+<span class="tex2jax_ignore"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" lang="de" id="2b612d2b75c84eaa994f73d84cd448c3-0" class="displacy" width="2850" height="574.5" direction="ltr" style="max-width: none; height: 574.5px; color: #000000; background: #ffffff; font-family: Arial; direction: ltr">
 <text class="displacy-token" fill="currentColor" text-anchor="middle" y="484.5">
     <tspan class="displacy-word" fill="currentColor" x="50">Bei</tspan>
     <tspan class="displacy-tag" dy="2em" fill="currentColor" x="50">ADP</tspan>
@@ -928,130 +955,130 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </text>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-0" stroke-width="2px" d="M70,439.5 C70,2.0 1625.0,2.0 1625.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-0" stroke-width="2px" d="M70,439.5 C70,2.0 1625.0,2.0 1625.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-0" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">mo</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-0" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">mo</textpath>
     </text>
     <path class="displacy-arrowhead" d="M70,441.5 L62,429.5 78,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-1" stroke-width="2px" d="M245,439.5 C245,352.0 380.0,352.0 380.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-1" stroke-width="2px" d="M245,439.5 C245,352.0 380.0,352.0 380.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-1" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-1" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M245,441.5 L237,429.5 253,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-2" stroke-width="2px" d="M70,439.5 C70,264.5 385.0,264.5 385.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-2" stroke-width="2px" d="M70,439.5 C70,264.5 385.0,264.5 385.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-2" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-2" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M385.0,441.5 L393.0,429.5 377.0,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-3" stroke-width="2px" d="M595,439.5 C595,352.0 730.0,352.0 730.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-3" stroke-width="2px" d="M595,439.5 C595,352.0 730.0,352.0 730.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-3" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-3" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M595,441.5 L587,429.5 603,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-4" stroke-width="2px" d="M420,439.5 C420,264.5 735.0,264.5 735.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-4" stroke-width="2px" d="M420,439.5 C420,264.5 735.0,264.5 735.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-4" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">ag</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-4" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">ag</textpath>
     </text>
     <path class="displacy-arrowhead" d="M735.0,441.5 L743.0,429.5 727.0,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-5" stroke-width="2px" d="M1120,439.5 C1120,264.5 1435.0,264.5 1435.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-5" stroke-width="2px" d="M1120,439.5 C1120,264.5 1435.0,264.5 1435.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-5" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-5" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1120,441.5 L1112,429.5 1128,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-6" stroke-width="2px" d="M1295,439.5 C1295,352.0 1430.0,352.0 1430.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-6" stroke-width="2px" d="M1295,439.5 C1295,352.0 1430.0,352.0 1430.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-6" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-6" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1295,441.5 L1287,429.5 1303,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-7" stroke-width="2px" d="M945,439.5 C945,177.0 1440.0,177.0 1440.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-7" stroke-width="2px" d="M945,439.5 C945,177.0 1440.0,177.0 1440.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-7" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">sb</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-7" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">sb</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1440.0,441.5 L1448.0,429.5 1432.0,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-8" stroke-width="2px" d="M945,439.5 C945,89.5 1620.0,89.5 1620.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-8" stroke-width="2px" d="M945,439.5 C945,89.5 1620.0,89.5 1620.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-8" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">oc</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-8" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">oc</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1620.0,441.5 L1628.0,429.5 1612.0,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-9" stroke-width="2px" d="M1820,439.5 C1820,89.5 2670.0,89.5 2670.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-9" stroke-width="2px" d="M1820,439.5 C1820,89.5 2670.0,89.5 2670.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-9" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">cp</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-9" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">cp</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1820,441.5 L1812,429.5 1828,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-10" stroke-width="2px" d="M1995,439.5 C1995,177.0 2665.0,177.0 2665.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-10" stroke-width="2px" d="M1995,439.5 C1995,177.0 2665.0,177.0 2665.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-10" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">op</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-10" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">op</textpath>
     </text>
     <path class="displacy-arrowhead" d="M1995,441.5 L1987,429.5 2003,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-11" stroke-width="2px" d="M2170,439.5 C2170,352.0 2305.0,352.0 2305.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-11" stroke-width="2px" d="M2170,439.5 C2170,352.0 2305.0,352.0 2305.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-11" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-11" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2170,441.5 L2162,429.5 2178,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-12" stroke-width="2px" d="M1995,439.5 C1995,264.5 2310.0,264.5 2310.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-12" stroke-width="2px" d="M1995,439.5 C1995,264.5 2310.0,264.5 2310.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-12" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-12" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">nk</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2310.0,441.5 L2318.0,429.5 2302.0,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-13" stroke-width="2px" d="M2520,439.5 C2520,352.0 2655.0,352.0 2655.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-13" stroke-width="2px" d="M2520,439.5 C2520,352.0 2655.0,352.0 2655.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-13" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">pm</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-13" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">pm</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2520,441.5 L2512,429.5 2528,429.5" fill="currentColor"></path>
 </g>
 
 <g class="displacy-arrow">
-    <path class="displacy-arc" id="arrow-c0a63d98a14f41df955503f1282df6c0-0-14" stroke-width="2px" d="M1645,439.5 C1645,2.0 2675.0,2.0 2675.0,439.5" fill="none" stroke="currentColor"></path>
+    <path class="displacy-arc" id="arrow-2b612d2b75c84eaa994f73d84cd448c3-0-14" stroke-width="2px" d="M1645,439.5 C1645,2.0 2675.0,2.0 2675.0,439.5" fill="none" stroke="currentColor"></path>
     <text dy="1.25em" style="font-size: 0.8em; letter-spacing: 1px">
-        <textpath href="#arrow-c0a63d98a14f41df955503f1282df6c0-0-14" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">mo</textpath>
+        <textpath href="#arrow-2b612d2b75c84eaa994f73d84cd448c3-0-14" class="displacy-label" startoffset="50%" side="left" fill="currentColor" text-anchor="middle">mo</textpath>
     </text>
     <path class="displacy-arrowhead" d="M2675.0,441.5 L2683.0,429.5 2667.0,429.5" fill="currentColor"></path>
 </g>
 </svg></span>
 </div>
 </div>
-<div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pd.option_context(<span class="st">'display.max_colwidth'</span>, <span class="va">None</span>):</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    display(texts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="50">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pd.option_context(<span class="st">'display.max_colwidth'</span>, <span class="va">None</span>):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    display(texts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 
 <div>
@@ -1066,6 +1093,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <th>text</th>
       <th>pos</th>
       <th>length</th>
+      <th>morphology</th>
     </tr>
   </thead>
   <tbody>
@@ -1077,6 +1105,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <td>Κατὰ τὴν ἑρμηνείαν τῆς δηλώσεως βουλήσεως ἀναζητεῖται ἤ ἀληθὴς βούλησις ἄνευ προσηλώσεως εἱς τὰς λέξεις. (ΑΚ 173)</td>
       <td>ADP DET NOUN DET NOUN NOUN VERB PROPN ADV NOUN ADJ ADJ ADP DET NOUN PUNCT</td>
       <td>15</td>
+      <td>[{"Κατὰ": {}}, {"τὴν": {"Case": "Acc", "Definite": "Def", "Gender": "Fem", "Number": "Sing", "PronType": "Art"}}, {"ἑρμηνείαν": {"Case": "Acc", "Gender": "Fem", "Number": "Sing"}}, {"τῆς": {"Case": "Gen", "Definite": "Def", "Gender": "Fem", "Number": "Sing", "PronType": "Art"}}, {"δηλώσεως": {"Case": "Gen", "Gender": "Fem", "Number": "Sing"}}, {"βουλήσεως": {"Case": "Gen", "Gender": "Fem", "Number": "Sing"}}, {"ἀναζητεῖται": {"Aspect": "Imp", "Mood": "Ind", "Number": "Sing", "Person": "3", "Tense": "Pres", "VerbForm": "Fin", "Voice": "Pass"}}, {"ἤ": {"Case": "Gen", "Gender": "Fem", "Number": "Plur"}}, {"ἀληθὴς": {}}, {"βούλησις": {"Case": "Acc", "Gender": "Fem", "Number": "Sing"}}, {"ἄνευ": {"Case": "Acc", "Gender": "Fem", "Number": "Plur"}}, {"προσηλώσεως": {"Case": "Acc", "Gender": "Fem", "Number": "Sing"}}, {"εἱς": {}}, {"τὰς": {"Case": "Acc", "Definite": "Def", "Gender": "Fem", "Number": "Plur", "PronType": "Art"}}, {"λέξεις": {"Case": "Acc", "Gender": "Fem", "Number": "Plur"}}, {".": {}}]</td>
     </tr>
     <tr>
       <th>1</th>
@@ -1086,6 +1115,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <td>Κατά την ερμηνεία της δήλωσης βουλήσεως αναζητείται η αληθινή βούληση χωρίς προσήλωση στις λέξεις. (AK 173)</td>
       <td>ADP DET NOUN DET NOUN NOUN VERB DET ADJ NOUN ADP NOUN ADP NOUN PUNCT</td>
       <td>14</td>
+      <td>[{"Κατά": {}}, {"την": {"Case": "Acc", "Definite": "Def", "Gender": "Fem", "Number": "Sing", "PronType": "Art"}}, {"ερμηνεία": {"Case": "Acc", "Gender": "Fem", "Number": "Sing"}}, {"της": {"Case": "Gen", "Definite": "Def", "Gender": "Fem", "Number": "Sing", "PronType": "Art"}}, {"δήλωσης": {"Case": "Gen", "Gender": "Fem", "Number": "Sing"}}, {"βουλήσεως": {"Case": "Gen", "Gender": "Fem", "Number": "Sing"}}, {"αναζητείται": {"Aspect": "Imp", "Mood": "Ind", "Number": "Sing", "Person": "3", "Tense": "Pres", "VerbForm": "Fin", "Voice": "Pass"}}, {"η": {"Case": "Nom", "Definite": "Def", "Gender": "Fem", "Number": "Sing", "PronType": "Art"}}, {"αληθινή": {"Case": "Nom", "Gender": "Fem", "Number": "Sing"}}, {"βούληση": {"Case": "Nom", "Gender": "Fem", "Number": "Sing"}}, {"χωρίς": {}}, {"προσήλωση": {"Case": "Acc", "Gender": "Fem", "Number": "Sing"}}, {"στις": {"Case": "Acc", "Gender": "Fem", "Number": "Plur"}}, {"λέξεις": {"Case": "Acc", "Gender": "Fem", "Number": "Plur"}}, {".": {}}]</td>
     </tr>
     <tr>
       <th>2</th>
@@ -1095,6 +1125,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <td>Bei der Auslegung einer Willenserklärung ist der wirkliche Wille zu erforschen und nicht an dem buchstäblichen Sinne des Ausdrucks zu haften. (BGB § 133)</td>
       <td>ADP DET NOUN DET NOUN AUX DET ADJ NOUN PART VERB CCONJ PART ADP DET ADJ NOUN DET NOUN PART VERB PUNCT</td>
       <td>21</td>
+      <td>[{"Bei": {}}, {"der": {"Case": "Dat", "Definite": "Def", "Gender": "Fem", "Number": "Sing", "PronType": "Art"}}, {"Auslegung": {"Case": "Dat", "Gender": "Fem", "Number": "Sing"}}, {"einer": {"Case": "Gen", "Definite": "Ind", "Gender": "Fem", "Number": "Sing", "PronType": "Art"}}, {"Willenserklärung": {"Case": "Gen", "Gender": "Fem", "Number": "Sing"}}, {"ist": {"Mood": "Ind", "Number": "Sing", "Person": "3", "Tense": "Pres", "VerbForm": "Fin"}}, {"der": {"Case": "Nom", "Definite": "Def", "Gender": "Masc", "Number": "Sing", "PronType": "Art"}}, {"wirkliche": {"Case": "Nom", "Degree": "Pos", "Gender": "Masc", "Number": "Sing"}}, {"Wille": {"Case": "Nom", "Gender": "Masc", "Number": "Sing"}}, {"zu": {}}, {"erforschen": {"VerbForm": "Inf"}}, {"und": {}}, {"nicht": {}}, {"an": {}}, {"dem": {"Case": "Dat", "Definite": "Def", "Gender": "Masc", "Number": "Sing", "PronType": "Art"}}, {"buchstäblichen": {"Case": "Dat", "Degree": "Pos", "Gender": "Masc", "Number": "Sing"}}, {"Sinne": {"Case": "Dat", "Gender": "Masc", "Number": "Sing"}}, {"des": {"Case": "Gen", "Definite": "Def", "Gender": "Masc", "Number": "Sing", "PronType": "Art"}}, {"Ausdrucks": {"Case": "Gen", "Gender": "Masc", "Number": "Sing"}}, {"zu": {}}, {"haften": {"VerbForm": "Inf"}}, {".": {}}]</td>
     </tr>
     <tr>
       <th>3</th>
@@ -1104,16 +1135,111 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <td>Bei der Auslegung einer Willenserklärung wird der wirkliche Wille erforscht, ohne an den Worten zu haften.</td>
       <td>ADP DET NOUN DET NOUN AUX DET ADJ NOUN VERB PUNCT SCONJ ADP DET NOUN PART VERB PUNCT</td>
       <td>16</td>
+      <td>[{"Bei": {}}, {"der": {"Case": "Dat", "Definite": "Def", "Gender": "Fem", "Number": "Sing", "PronType": "Art"}}, {"Auslegung": {"Case": "Dat", "Gender": "Fem", "Number": "Sing"}}, {"einer": {"Case": "Gen", "Definite": "Ind", "Gender": "Fem", "Number": "Sing", "PronType": "Art"}}, {"Willenserklärung": {"Case": "Gen", "Gender": "Fem", "Number": "Sing"}}, {"wird": {"Mood": "Ind", "Number": "Sing", "Person": "3", "Tense": "Pres", "VerbForm": "Fin"}}, {"der": {"Case": "Nom", "Definite": "Def", "Gender": "Masc", "Number": "Sing", "PronType": "Art"}}, {"wirkliche": {"Case": "Nom", "Degree": "Pos", "Gender": "Masc", "Number": "Sing"}}, {"Wille": {"Case": "Nom", "Gender": "Masc", "Number": "Sing"}}, {"erforscht": {"VerbForm": "Part"}}, {",": {}}, {"ohne": {}}, {"an": {}}, {"den": {"Case": "Dat", "Definite": "Def", "Gender": "Neut", "Number": "Plur", "PronType": "Art"}}, {"Worten": {"Case": "Dat", "Gender": "Neut", "Number": "Plur"}}, {"zu": {}}, {"haften": {"VerbForm": "Inf"}}, {".": {}}]</td>
     </tr>
   </tbody>
 </table>
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>grouped <span class="op">=</span> texts.groupby([<span class="st">'id'</span>, <span class="st">'lang'</span>]).agg({<span class="st">'length'</span>: [<span class="st">'mean'</span>, <span class="st">'std'</span>]}).reset_index()</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>grouped</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="cell" data-execution_count="260">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a new dataframe by copying the columns 'id', 'lang', 'version' and 'morphology'</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> texts[[<span class="st">'id'</span>, <span class="st">'lang'</span>, <span class="st">'version'</span>, <span class="st">'morphology'</span>]].copy()</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'morphology'</span>] <span class="op">=</span> df[<span class="st">'morphology'</span>].<span class="bu">apply</span>(json.loads)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># expand the dataframe by adding a new row for each token in the text</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.explode(<span class="st">'morphology'</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># expand the morphology column into columns</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># df = pd.concat([df.drop(['morphology'], axis=1), df['morphology'].apply(pd.Series)], axis=1)</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># convert the key of the dictionary to a column by splitting on ':'</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> (pd.concat([</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        df.drop([<span class="st">'morphology'</span>], axis<span class="op">=</span><span class="dv">1</span>), </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'morphology'</span>]</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>            .<span class="bu">apply</span>(pd.Series, dtype<span class="op">=</span><span class="st">'object'</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>            .stack()</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>            .reset_index(level<span class="op">=</span><span class="dv">1</span>, name<span class="op">=</span><span class="st">'morphology'</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># expand the morphology column into new columns</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.concat([df.drop([<span class="st">'morphology'</span>], axis<span class="op">=</span><span class="dv">1</span>), df[<span class="st">'morphology'</span>].<span class="bu">apply</span>(pd.Series, dtype<span class="op">=</span><span class="st">'object'</span>)], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>df_grouped <span class="op">=</span> df.groupby([<span class="st">'id'</span>, <span class="st">'lang'</span>])</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [col <span class="cf">for</span> col <span class="kw">in</span> group.columns <span class="cf">if</span> col[<span class="dv">0</span>].isupper() <span class="kw">and</span> <span class="bu">len</span>(df_grouped[col].value_counts().unstack().columns) <span class="op">&gt;</span> <span class="dv">1</span>]</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>num_plots <span class="op">=</span> <span class="bu">len</span>(cols)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>n_rows <span class="op">=</span> math.ceil(num_plots <span class="op">/</span> <span class="dv">2</span>)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>n_cols <span class="op">=</span> <span class="dv">2</span> <span class="cf">if</span> num_plots <span class="op">&gt;</span> <span class="dv">1</span> <span class="cf">else</span> <span class="dv">1</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(n_rows, n_cols, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span> <span class="op">*</span> n_rows))</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, col <span class="kw">in</span> <span class="bu">enumerate</span>(cols):</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    fig.suptitle(<span class="ss">f"Παράδειγμα </span><span class="sc">{</span>df_grouped[col]<span class="sc">.</span>value_counts()<span class="sc">.</span>unstack()<span class="sc">.</span>index[<span class="dv">0</span>][<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>, fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> axes[i <span class="op">//</span> n_cols, i <span class="op">%</span> n_cols]</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">'Απόλυτη συχνότητα'</span>)</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    ax.set_title(col)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    (df_grouped[col]</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>        .value_counts()</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>        .unstack()</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>        .plot(</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>            kind<span class="op">=</span><span class="st">'bar'</span>, </span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>            ax<span class="op">=</span>ax, </span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>            <span class="co"># set different colors for each value of the column</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>            color<span class="op">=</span>[<span class="bu">list</span>(COLORS.values())[i] </span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>                   <span class="cf">for</span> i, _ <span class="kw">in</span> <span class="bu">enumerate</span>(df_grouped[col]</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>                                            .value_counts()</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>                                            .unstack()</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>                                            .columns)</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>                   ], </span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>            stacked<span class="op">=</span><span class="va">True</span>, </span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>            sharey<span class="op">=</span><span class="va">True</span>, </span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>            rot<span class="op">=</span><span class="dv">0</span>, </span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>            zorder<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>    xticks <span class="op">=</span> [<span class="bu">str</span>(i).removeprefix(<span class="st">'('</span>).removesuffix(<span class="st">')'</span>).replace(<span class="st">"'"</span>, <span class="st">''</span>).upper().split(<span class="st">','</span>)[<span class="dv">1</span>].strip()</span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> i <span class="kw">in</span> df_grouped[col].value_counts().unstack().index]</span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>    ax.set_xticklabels(xticks)</span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="va">None</span>)</span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>    ax.legend().set_title(<span class="va">None</span>)</span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>    ax.legend(loc<span class="op">=</span><span class="st">'lower center'</span>)</span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>    ax.grid(axis<span class="op">=</span><span class="st">'both'</span>, color<span class="op">=</span><span class="st">'lightgray'</span>, zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a><span class="co"># check if the number of plots is odd and remove the last subplot</span></span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> num_plots <span class="op">%</span> <span class="dv">2</span> <span class="op">!=</span> <span class="dv">0</span>:</span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>    fig.delaxes(axes[<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>plt.show()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="text_files/figure-html/cell-9-output-1.svg" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="240">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.colors <span class="im">as</span> mcolors</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>n_colors <span class="op">=</span> <span class="dv">256</span>  <span class="co"># Number of colors you want to generate</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>palette <span class="op">=</span> sns.color_palette(<span class="st">'gist_stern'</span>, n_colors<span class="op">=</span>n_colors)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>color_list <span class="op">=</span> [mcolors.rgb2hex(color) <span class="cf">for</span> color <span class="kw">in</span> palette]</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'$colors: (</span><span class="ch">\n\t</span><span class="st">'</span>, <span class="st">", "</span>.join(color_list), <span class="st">'</span><span class="ch">\n</span><span class="st">);'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$colors: (
+     #000000, #120102, #250204, #370306, #490408, #5b050a, #6e060c, #80070e, #920810, #a50912, #b70a14, #c90b16, #db0c18, #ee0d1a, #ff0e1c, #fa0f1e, #f51020, #f01122, #eb1224, #e61326, #e11428, #dc152a, #d7162c, #d2172e, #cd1830, #c81932, #c31a34, #be1b36, #b91c38, #b41d3a, #af1e3c, #aa1f3e, #a52040, #a02142, #9b2244, #962346, #912448, #8c254a, #87264c, #82274e, #7d2850, #782952, #732a54, #6e2b56, #692c58, #642d5a, #5f2e5c, #5a2f5e, #553060, #503162, #4b3264, #463366, #413468, #3c356a, #37366c, #32376e, #2d3870, #293972, #243a74, #1f3b76, #1a3c78, #153d7a, #103e7c, #0b3f7e, #404080, #414182, #424284, #434386, #444488, #45458a, #46468c, #47478e, #484890, #494992, #4a4a94, #4b4b96, #4c4c98, #4d4d9a, #4e4e9c, #4f4f9e, #5050a0, #5151a2, #5252a4, #5353a6, #5454a8, #5555aa, #5656ac, #5757ae, #5858b0, #5959b2, #5a5ab4, #5b5bb6, #5c5cb8, #5d5dba, #5e5ebc, #5f5fbe, #6060c0, #6161c2, #6262c4, #6363c6, #6464c8, #6565ca, #6666cc, #6767ce, #6868d0, #6969d2, #6a6ad4, #6b6bd6, #6c6cd8, #6d6dda, #6e6edc, #6f6fde, #7070e0, #7171e2, #7272e4, #7373e6, #7474e8, #7575ea, #7676ec, #7777ee, #7878f0, #7979f2, #7a7af4, #7b7bf6, #7c7cf8, #7d7dfa, #7e7efc, #7f7ffe, #8080fd, #8181f9, #8282f4, #8383f0, #8484ec, #8585e8, #8686e3, #8787df, #8888db, #8989d7, #8a8ad2, #8b8bce, #8c8cca, #8d8dc6, #8e8ec1, #8f8fbd, #9090b9, #9191b5, #9292b0, #9393ac, #9494a8, #9595a4, #96969f, #97979b, #989897, #999992, #9a9a8e, #9b9b8a, #9c9c86, #9d9d81, #9e9e7d, #9f9f79, #a0a075, #a1a170, #a2a26c, #a3a368, #a4a464, #a5a55f, #a6a65b, #a7a757, #a8a853, #a9a94e, #aaaa4a, #abab46, #acac42, #adad3d, #aeae39, #afaf35, #b0b031, #b1b12c, #b2b228, #b3b324, #b4b420, #b5b51b, #b6b617, #b7b713, #b8b80f, #b9b90a, #baba06, #bbbb02, #bcbc02, #bdbd06, #bebe0a, #bfbf0d, #c0c011, #c1c115, #c2c219, #c3c31d, #c4c420, #c5c524, #c6c628, #c7c72c, #c8c82f, #c9c933, #caca37, #cbcb3b, #cccc3f, #cdcd42, #cece46, #cfcf4a, #d0d04e, #d1d151, #d2d255, #d3d359, #d4d45d, #d5d561, #d6d664, #d7d768, #d8d86c, #d9d970, #dada73, #dbdb77, #dcdc7b, #dddd7f, #dede82, #dfdf86, #e0e08a, #e1e18e, #e2e292, #e3e395, #e4e499, #e5e59d, #e6e6a1, #e7e7a4, #e8e8a8, #e9e9ac, #eaeab0, #ebebb4, #ececb7, #ededbb, #eeeebf, #efefc3, #f0f0c6, #f1f1ca, #f2f2ce, #f3f3d2, #f4f4d5, #f5f5d9, #f6f6dd, #f7f7e1, #f8f8e5, #f9f9e8, #fafaec, #fbfbf0, #fcfcf4, #fdfdf7, #fefefb, #ffffff 
+);</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="218">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>grouped <span class="op">=</span> texts.groupby([<span class="st">'id'</span>, <span class="st">'lang'</span>]).agg({<span class="st">'length'</span>: [<span class="st">'mean'</span>, <span class="st">'std'</span>]}).reset_index()</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>grouped</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="218">
 
 <div>
 
@@ -1153,14 +1279,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Take the grouped data by id and lang. Then calculate how different the pos tags are in each language and plot the results.</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>grouped_ <span class="op">=</span> texts.groupby([<span class="st">'id'</span>, <span class="st">'lang'</span>]).agg({<span class="st">'pos'</span>: <span class="kw">lambda</span> x: x.value_counts().index[<span class="dv">0</span>]}).reset_index()</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>grouped_[<span class="st">'pos'</span>] <span class="op">=</span> grouped_[<span class="st">'pos'</span>].<span class="bu">str</span>.split(<span class="st">' '</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>grouped_[<span class="st">'pos_diff'</span>] <span class="op">=</span> grouped_[<span class="st">'pos'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="bu">len</span>(<span class="bu">set</span>(x)) <span class="op">/</span> <span class="bu">len</span>(x))</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>grouped_ <span class="op">=</span> grouped_.drop(columns<span class="op">=</span>[<span class="st">'pos'</span>])</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>grouped_</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell" data-execution_count="219">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Take the grouped data by id and lang. Then calculate how different the pos tags are in each language and plot the results.</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>grouped_ <span class="op">=</span> texts.groupby([<span class="st">'id'</span>, <span class="st">'lang'</span>]).agg({<span class="st">'pos'</span>: <span class="kw">lambda</span> x: x.value_counts().index[<span class="dv">0</span>]}).reset_index()</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>grouped_[<span class="st">'pos'</span>] <span class="op">=</span> grouped_[<span class="st">'pos'</span>].<span class="bu">str</span>.split(<span class="st">' '</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>grouped_[<span class="st">'pos_diff'</span>] <span class="op">=</span> grouped_[<span class="st">'pos'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="bu">len</span>(<span class="bu">set</span>(x)) <span class="op">/</span> <span class="bu">len</span>(x))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>grouped_ <span class="op">=</span> grouped_.drop(columns<span class="op">=</span>[<span class="st">'pos'</span>])</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>grouped_</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="219">
 
 <div>
 
@@ -1191,25 +1317,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.lines <span class="im">import</span> Line2D</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>(grouped_</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    .groupby([<span class="st">'id'</span>, <span class="st">'lang'</span>])</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    .agg({<span class="st">'pos_diff'</span>: <span class="st">'mean'</span>})</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    .unstack()</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    .plot(kind<span class="op">=</span><span class="st">'bar'</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>), zorder<span class="op">=</span><span class="dv">3</span>, color<span class="op">=</span>COLORS.values(),</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>          yerr<span class="op">=</span>grouped_[<span class="st">'pos_diff'</span>].std(),</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>          error_kw<span class="op">=</span>{<span class="st">'capsize'</span>: <span class="dv">5</span>, <span class="st">'ecolor'</span>: COLORS[<span class="st">'err'</span>]})</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">'Γερμανικά'</span>, <span class="st">'Ελληνικά'</span>])</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Μέση διαφορά στη χρήση των μερών του λόγου'</span>)</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Α/Α πρότασης'</span>)</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>plt.grid(axis<span class="op">=</span><span class="st">'both'</span>, alpha<span class="op">=</span><span class="fl">0.25</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, zorder<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>plt.show()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="220">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.lines <span class="im">import</span> Line2D</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>(grouped_</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    .groupby([<span class="st">'id'</span>, <span class="st">'lang'</span>])</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    .agg({<span class="st">'pos_diff'</span>: <span class="st">'mean'</span>})</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    .unstack()</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    .plot(kind<span class="op">=</span><span class="st">'bar'</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>), zorder<span class="op">=</span><span class="dv">3</span>, color<span class="op">=</span>COLORS.values(),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>          yerr<span class="op">=</span>grouped_[<span class="st">'pos_diff'</span>].std(),</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>          error_kw<span class="op">=</span>{<span class="st">'capsize'</span>: <span class="dv">5</span>, <span class="st">'ecolor'</span>: COLORS[<span class="st">'err'</span>]})</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>plt.legend([<span class="st">'Γερμανικά'</span>, <span class="st">'Ελληνικά'</span>])</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Μέση διαφορά στη χρήση των μερών του λόγου'</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Α/Α πρότασης'</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>plt.grid(axis<span class="op">=</span><span class="st">'both'</span>, alpha<span class="op">=</span><span class="fl">0.25</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, zorder<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>plt.show()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="text_files/figure-html/cell-11-output-1.svg" class="img-fluid"></p>
+<p><img src="text_files/figure-html/cell-13-output-1.svg" class="img-fluid"></p>
 </div>
 </div>
 
