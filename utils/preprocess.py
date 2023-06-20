@@ -64,5 +64,6 @@ class DataFramePreprocessor:
                                                           self.digits_to_zeros,
                                                           self.remove_punctuation
                                                          ).preprocess()))
+        print(preprocessed)
         preprocessed_df = pd.DataFrame({'preprocessed': preprocessed})
         return pd.concat([self.df, preprocessed_df], axis=1)
