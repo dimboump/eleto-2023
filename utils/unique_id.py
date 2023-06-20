@@ -23,7 +23,8 @@ def main() -> int:
             print(row['uid'])
 
     with open('new.csv', 'w', encoding='utf-8', newline='') as f_out:
-        writer = csv.DictWriter(f_out, fieldnames=rows[0].keys())
+        writer = csv.DictWriter(f_out, fieldnames=['id', 'uid'] + \
+                                [key for key in rows[0].keys() if key != 'id'])
         writer.writeheader()
         writer.writerows(rows)
 
