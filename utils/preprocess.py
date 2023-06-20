@@ -7,8 +7,17 @@ import pandas as pd
 class TextPreprocessor:
     """Preprocess text by removing cross references and punctuation,
     and replacing numbers with zeros."""
-    def __init__(self, text: str):
+    def __init__(
+        self, 
+        text: str, 
+        remove_crossrefs: bool = True, 
+        digits_to_zeros: bool = True, 
+        remove_punctuation: bool = True
+    ):
         self.text = text
+        self.remove_crossrefs = remove_crossrefs
+        self.digits_to_zeros = digits_to_zeros
+        self.remove_punctuation = remove_punctuation
 
     def _remove_crossrefs(self) -> None:
         """Remove cross references from text. 
@@ -28,18 +37,32 @@ class TextPreprocessor:
     def preprocess(self) -> str:
         """Preprocess text by removing cross references and punctuation, 
         and replacing numbers with zeros."""
-        self._remove_crossrefs()
-        self._digits_to_zeros()
-        self._remove_punctuation()
+        if self.remove_crossrefs: self._remove_crossrefs()
+        if self.digits_to_zeros: self._digits_to_zeros()
+        if self.remove_punctuation: self._remove_punctuation()
         return self.text
 
 
 class DataFramePreprocessor:
     """Preprocess a dataframe by adding a column with the preprocessed text."""
-    def __init__(self, df):
+    def __init__(
+        self,
+        df: pd.DataFrame,
+        remove_crossrefs: bool = True,
+        digits_to_zeros: bool = True,
+        remove_punctuation: bool = True
+    ):
         self.df = df
+        self.remove_crossrefs = remove_crossrefs
+        self.digits_to_zeros = digits_to_zeros
+        self.remove_punctuation = remove_punctuation
     
     def preprocess(self):
-        preprocessed_texts = self.df['text'].apply(lambda x: TextPreprocessor(x).preprocess())
-        preprocessed_df = pd.DataFrame({'preprocessed_text': preprocessed_texts})
+        preprocessed = (self.df['text']
+                        .apply(lambda x: TextPreprocessor(x,
+                                                          self.remove_crossrefs,
+                                                          self.digits_to_zeros,
+                                                          self.remove_punctuation
+                                                         ).preprocess()))
+        preprocessed_df = pd.DataFrame({'preprocessed': preprocessed})
         return pd.concat([self.df, preprocessed_df], axis=1)
