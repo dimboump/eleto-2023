@@ -5,7 +5,7 @@ import sys
 from string import ascii_lowercase, digits
 from typing import Dict, List
 
-Rows = List[Dict[str, str]]
+Row = Dict[str, str]
 
 def generate_unique_id(id: int, zfill: int = 0) -> str:
     random_str = ''.join(random.choices(ascii_lowercase + digits, k=6))
@@ -13,13 +13,13 @@ def generate_unique_id(id: int, zfill: int = 0) -> str:
     unique_id = f"{id_leading_zeros}-{random_str}"
     return unique_id
 
-def read_csv(file: str, delim: str) -> Rows:
+def read_csv(file: str, delim: str) -> List[Row]:
     with open(file, 'r', encoding='utf-8') as f_in:
         reader = csv.DictReader(f_in, delimiter=delim)
         rows = [row for row in reader]
     return rows
 
-def count_unique_ids(rows: Rows) -> int:
+def count_unique_ids(rows: List[Row]) -> int:
     n_unique_ids = len(set([row['id'] for row in rows]))
     return n_unique_ids
 
@@ -27,13 +27,13 @@ def get_zfill(n: int) -> int:
     zfill = len(str(n)) if len(str(n)) > 2 else 2
     return zfill
 
-def add_unique_ids(rows: Rows, zfill: int) -> Rows:
+def add_unique_ids(rows: List[Row], zfill: int) -> List[Row]:
     for row in rows:
         row['uid'] = generate_unique_id(int(row['id']), zfill)
         print(row['uid'])
     return rows
 
-def write_csv(rows: Rows, out_file: str, delim: str) -> None:
+def write_csv(rows: List[Row], out_file: str, delim: str) -> None:
     with open(out_file, 'w', encoding='utf-8', newline='') as f_out:
         fields = ['id', 'uid'] + [k for k in rows[0].keys() 
                                   if k not in {'id', 'uid'}]
