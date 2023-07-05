@@ -4,9 +4,11 @@ api/
 *.txt
 *.docx
 *.xlsx
+*.pdf
 *.json
 *.csv
 *.tsv
+*.svg
 
 __pycache__/
 
